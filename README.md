@@ -136,5 +136,33 @@ Verify the driver installation running:
 nvidia-smi
 ```
 
+### **Setting up containers for using the gpus** ###
 
+* After driver installation on proxmox host, you need to create your container and add the following lines to the </etc/pve/lxc/<your_container_id>.conf:
+```ini
+lxc.cgroup.devices.allow: c 195:* rwm
+lxc.cgroup.devices.allow: c 507:* rwm
+lxc.mount.entry: /dev/nvidia0 dev/nvidia0 none bind,optional,create=file
+lxc.mount.entry: /dev/nvidiactl dev/nvidiactl none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-modeset dev/nvidia-modeset none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-uvm dev/nvidia-uvm none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-uvm-tools dev/nvidia-uvm-tools none bind,optional,create=file
+```
+this will allow your container to access to the gpu.
+
+After, enter your container console andshutw download the SAME version of your proxmox host drivers on your container:
+```bash
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/550.90.07/NVIDIA-Linux-x86_64-550.90.07.run 
+```
+```bash
+chmod +x NVIDIA-Linux-x86_64-550.90.07.run
+```
+and execute it:
+```bash
+./NVIDIA-Linux-x86_64-550.90.07.run --no-kernel-module
+```
+
+this time without kernel modules, because they already exist on your proxmox host.
+
+See this [guide](https://psmarcin.dev/posts/how-to-configure-gpu-passthrough-for-linux-containers-on-proxmox/) too.
 
