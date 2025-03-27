@@ -143,6 +143,8 @@ nvidia-smi
 lxc.cgroup.devices.allow: c 195:* rwm
 lxc.cgroup.devices.allow: c 507:* rwm
 lxc.mount.entry: /dev/nvidia0 dev/nvidia0 none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-caps/nvidia-caps1 dev/nvidia-caps/nvidia-caps1 none bind,optional,create=file
+lxc.mount.entry: /dev/nvidia-caps/nvidia-caps2 dev/nvidia-caps/nvidia-caps2 none bind,optional,create=file
 lxc.mount.entry: /dev/nvidiactl dev/nvidiactl none bind,optional,create=file
 lxc.mount.entry: /dev/nvidia-modeset dev/nvidia-modeset none bind,optional,create=file
 lxc.mount.entry: /dev/nvidia-uvm dev/nvidia-uvm none bind,optional,create=file
