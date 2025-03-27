@@ -58,3 +58,83 @@ If you have an app that uses this space and needs permissions to access to it, j
 ```bash
 chown -R your_app_id:your_app_id /your/bind/mount/directory
 ```
+
+### **installing NVIDIA Drivers** ###
+* In your proxmox host console, edit the following file:
+```bash
+nano /etc/apt/sources.list
+```
+and add:
+```ini
+deb http://download.proxmox.com/debian/pve bookworm pve-no-subscription
+```
+* close this file, execute:
+```bash
+apt update && apt upgrade -y
+```
+and install :
+
+```bash
+apt install pve-headers
+```
+
+* now you need to blacklist the default driver; do:
+```bash
+nano /etc/modprobe.d/blacklist-nouveau.conf
+```
+and add the following lines:
+
+```ini
+blacklist nouveau
+options nouveau modeset=0
+```
+
+then execute the command to regenerate the initramfs image:
+
+```bash
+update-initramfs -u
+```
+
+check if nuveau driver has been completely removed from running by executing this:
+```bash
+lsmod | grep nouveau
+```
+
+if there still is a voice with 'nuveau' run this:
+```bash
+rmmod nouveau
+```
+
+and reboot your system.
+
+* now it's the time to install nvidia drivers.
+Install necessary packets:
+```bash
+apt install -y build-essential pve-headers-$(uname -r)
+apt install proxmox-headers-$(uname -r)
+```
+
+download the driver from the official site:
+```bash
+#obviously change this link if you want another version
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/550.90.07/NVIDIA-Linux-x86_64-550.90.07.run
+```
+
+let the file become executable:
+```bash
+chmod +x NVIDIA-Linux-x86_64-550.90.07.run
+```
+
+and execute the file:
+```bash
+./NVIDIA-Linux-x86_64-550.90.07.run --dkms
+```
+
+go through the setup and complete the process.
+Verify the driver installation running:
+```bash
+nvidia-smi
+```
+
+
+
