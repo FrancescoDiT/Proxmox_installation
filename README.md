@@ -175,7 +175,7 @@ udevadm trigger
 
 After, enter your container console and download the SAME version of your proxmox host drivers on your container:
 ```bash
-wget https://us.download.nvidia.com/XFree86/Linux-x86_64/550.90.07/NVIDIA-Linux-x86_64-570.86.16.run 
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/570.86.16/NVIDIA-Linux-x86_64-570.86.16.run 
 ```
 ```bash
 chmod +x NVIDIA-Linux-x86_64-570.86.16.run
