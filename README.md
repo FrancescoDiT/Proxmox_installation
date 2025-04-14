@@ -145,7 +145,8 @@ from the output, get the group numbers and create as much "allow" entries as the
 * After driver installation on proxmox host, you need to create your container and add the following lines to the </etc/pve/lxc/<your_container_id>.conf:
 ```ini
 lxc.cgroup.devices.allow: c 195:* rwm
-lxc.cgroup.devices.allow: c 235:* rwm
+lxc.cgroup.devices.allow: c 234:* rwm
+lxc.cgroup.devices.allow: c 237:* rwm
 lxc.mount.entry: /dev/nvidia0 dev/nvidia0 none bind,optional,create=file
 lxc.mount.entry: /dev/nvidia-caps/nvidia-caps1 dev/nvidia-caps/nvidia-caps1 none bind,optional,create=file
 lxc.mount.entry: /dev/nvidia-caps/nvidia-caps2 dev/nvidia-caps/nvidia-caps2 none bind,optional,create=file
