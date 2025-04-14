@@ -12,7 +12,7 @@ For enabling WOL you need to:
 @reboot /sbin/ethtool -s <your_physical_interface_name> wol g
 ```
 this command will enable the WOL always on start, because, by default, when your system get shutdown or rebooted, WOL option change state;
-* now check teh interface WOL status with:
+* now check the interface WOL status with:
 ```bash
 eththool <your_interface_name>
 ```
@@ -117,17 +117,17 @@ apt install proxmox-headers-$(uname -r)
 download the driver from the official site:
 ```bash
 #obviously change this link if you want another version
-wget https://us.download.nvidia.com/XFree86/Linux-x86_64/550.90.07/NVIDIA-Linux-x86_64-550.90.07.run
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/570.86.16/NVIDIA-Linux-x86_64-570.86.16.run
 ```
 
 let the file become executable:
 ```bash
-chmod +x NVIDIA-Linux-x86_64-550.90.07.run
+chmod +x NVIDIA-Linux-x86_64-570.86.16.run
 ```
 
 and execute the file:
 ```bash
-./NVIDIA-Linux-x86_64-550.90.07.run --dkms
+./NVIDIA-Linux-x86_64-570.86.16.run --dkms
 ```
 
 go through the setup and complete the process.
@@ -137,11 +137,15 @@ nvidia-smi
 ```
 
 ### **Setting up containers for using the gpus** ###
-
+* On your proxmox host console, run:
+```bash
+ls -l /dev/nvidia*
+```
+from the output, get the group numbers and create as much "allow" entries as the number of group numbers, then put your group number where you see "195".
 * After driver installation on proxmox host, you need to create your container and add the following lines to the </etc/pve/lxc/<your_container_id>.conf:
 ```ini
 lxc.cgroup.devices.allow: c 195:* rwm
-lxc.cgroup.devices.allow: c 507:* rwm
+lxc.cgroup.devices.allow: c 235:* rwm
 lxc.mount.entry: /dev/nvidia0 dev/nvidia0 none bind,optional,create=file
 lxc.mount.entry: /dev/nvidia-caps/nvidia-caps1 dev/nvidia-caps/nvidia-caps1 none bind,optional,create=file
 lxc.mount.entry: /dev/nvidia-caps/nvidia-caps2 dev/nvidia-caps/nvidia-caps2 none bind,optional,create=file
@@ -152,19 +156,45 @@ lxc.mount.entry: /dev/nvidia-uvm-tools dev/nvidia-uvm-tools none bind,optional,c
 ```
 this will allow your container to access to the gpu.
 
-After, enter your container console andshutw download the SAME version of your proxmox host drivers on your container:
+* Now you need to create a UDEV rule by doing this:
 ```bash
-wget https://us.download.nvidia.com/XFree86/Linux-x86_64/550.90.07/NVIDIA-Linux-x86_64-550.90.07.run 
+nano /etc/udev/rules.d/99-gpu-passthrough.rules
+```
+
+then insert this in the file:
+```ini
+KERNEL=="nvidia*", SUBSYSTEM=="misc", MODE="0666"
+```
+
+It's time to reload UDEV rules:
+```bash
+udevadm control --reload-rules
+udevadm trigger
+```
+
+After, enter your container console and download the SAME version of your proxmox host drivers on your container:
+```bash
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/550.90.07/NVIDIA-Linux-x86_64-570.86.16.run 
 ```
 ```bash
-chmod +x NVIDIA-Linux-x86_64-550.90.07.run
+chmod +x NVIDIA-Linux-x86_64-570.86.16.run
 ```
 and execute it:
 ```bash
-./NVIDIA-Linux-x86_64-550.90.07.run --no-kernel-module
+./NVIDIA-Linux-x86_64-570.86.16.run --no-kernel-module
 ```
 
 this time without kernel modules, because they already exist on your proxmox host.
 
 See this [guide](https://psmarcin.dev/posts/how-to-configure-gpu-passthrough-for-linux-containers-on-proxmox/) too.
 
+### **Download and run a stress test for your gpu** ###
+* Download and install the cuda toolkit by going [there](https://developer.nvidia.com/cuda-downloads).
+After the CUDA toolkit installation you can now do the following steps to download and execute the stress test
+```bash
+apt update && apt install -y git build-essential
+git clone https://github.com/wilicc/gpu-burn.git
+cd gpu-burn
+make
+./gpu_burn 60  # stressa la GPU per 60 secondi
+```
