@@ -117,17 +117,17 @@ apt install proxmox-headers-$(uname -r)
 download the driver from the official site:
 ```bash
 #obviously change this link if you want another version
-wget https://us.download.nvidia.com/XFree86/Linux-x86_64/570.86.16/NVIDIA-Linux-x86_64-570.86.16.run
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/570.133.07/NVIDIA-Linux-x86_64-570.133.07.run
 ```
 
 let the file become executable:
 ```bash
-chmod +x NVIDIA-Linux-x86_64-570.86.16.run
+chmod +x NVIDIA-Linux-x86_64-570.133.07.run
 ```
 
 and execute the file:
 ```bash
-./NVIDIA-Linux-x86_64-570.86.16.run --dkms
+./NVIDIA-Linux-x86_64-570.133.07.run --dkms
 ```
 
 go through the setup and complete the process.
@@ -175,14 +175,14 @@ udevadm trigger
 
 After, enter your container console and download the SAME version of your proxmox host drivers on your container:
 ```bash
-wget https://us.download.nvidia.com/XFree86/Linux-x86_64/570.86.16/NVIDIA-Linux-x86_64-570.86.16.run 
+wget https://us.download.nvidia.com/XFree86/Linux-x86_64/570.133.07/NVIDIA-Linux-x86_64-570.133.07.run 
 ```
 ```bash
-chmod +x NVIDIA-Linux-x86_64-570.86.16.run
+chmod +x NVIDIA-Linux-x86_64-570.133.07.run
 ```
 and execute it:
 ```bash
-./NVIDIA-Linux-x86_64-570.86.16.run --no-kernel-module
+./NVIDIA-Linux-x86_64-570.133.07.run --no-kernel-module
 ```
 
 this time without kernel modules, because they already exist on your proxmox host.
